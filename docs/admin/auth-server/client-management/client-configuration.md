@@ -46,9 +46,44 @@ The client can register a list of URIs as a value for redirect URI parameter. Re
 
 ## Cryptography
 
+### Key Rotation
 
+Janssen Server allows clients to configure keys using JWKS.  
+
+
+
+The client can select algorithms for cryptographic and encryption during client configuration. Janssen 
+Server supports a list of algorithms as listed in response of Janssen Server's well-known
+[configuration endpoint](./configuration.md) given below.
+
+```text
+https://janssen.server.host/jans-auth/.well-known/openid-configuration
+```
+
+Claims that list supported algorithms:
+
+- userinfo_encryption_enc_values_supported
+- userinfo_signing_alg_values_supported
+- userinfo_encryption_alg_values_supported
+- authorization_encryption_alg_values_supported
+- authorization_encryption_enc_values_supported
+- authorization_signing_alg_values_supported
+- request_object_signing_alg_values_supported
+- request_object_encryption_alg_values_supported
+- request_object_encryption_alg_values_supported
+- id_token_encryption_alg_values_supported
+- id_token_signing_alg_values_supported
+- access_token_signing_alg_values_supported
+- backchannel_authentication_request_signing_alg_values_supported
+- dpop_signing_alg_values_supported
+ 
+
+
+Refer to [crypto section] of Janssen Server administration documentation to understand more.
 
 ## Grants
+
+
 
 ## Pre-authorization
 
