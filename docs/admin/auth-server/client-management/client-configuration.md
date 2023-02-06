@@ -48,9 +48,10 @@ The client can register a list of URIs as a value for redirect URI parameter. Re
 
 ### Key Rotation
 
-Janssen Server allows clients to configure keys using JWKS.  
+Janssen Server allows clients to configure keys using JWKS or by providing a [JWKS_URI](https://www.rfc-editor.org/rfc/rfc7591#section-2). Use of this parameter is preferred over the "jwks" parameter, as it allows for easier key rotation.
 
 
+### Cryptographic and Encryption Algorithms
 
 The client can select algorithms for cryptographic and encryption during client configuration. Janssen 
 Server supports a list of algorithms as listed in response of Janssen Server's well-known
@@ -77,8 +78,6 @@ Claims that list supported algorithms:
 - backchannel_authentication_request_signing_alg_values_supported
 - dpop_signing_alg_values_supported
  
-
-
 Refer to [crypto section] of Janssen Server administration documentation to understand more.
 
 ## Grants
