@@ -7535,19 +7535,19 @@ components:
           $ref: '#/components/schemas/AttributeValidation'
         tooltip:
           type: string
-        whitePagesCanView:
-          type: boolean
-        userCanEdit:
-          type: boolean
-        adminCanEdit:
+        adminCanAccess:
           type: boolean
         adminCanView:
+          type: boolean
+        adminCanEdit:
           type: boolean
         userCanAccess:
           type: boolean
         userCanView:
           type: boolean
-        adminCanAccess:
+        whitePagesCanView:
+          type: boolean
+        userCanEdit:
           type: boolean
         baseDn:
           type: string
