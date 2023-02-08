@@ -185,14 +185,14 @@ public class CustomScriptResource extends ConfigBaseResource {
             ApiAccessConstants.SUPER_ADMIN_WRITE_ACCESS })
     public Response createScript(@Valid CustomScript customScript,
             @Parameter(description = "Boolean flag to indicate if script template is to be added. If CustomScript request object has script populated then script template will not be added.") @DefaultValue("false") @QueryParam(value = ApiConstants.ADD_SCRIPT_TEMPLATE) boolean addScriptTemplate) {
-        logger.info("Custom Script to create - customScript:{}, addScriptTemplate:{}", customScript, addScriptTemplate);
+        logger.error("Custom Script to create - customScript:{}, addScriptTemplate:{}", customScript, addScriptTemplate);
         Objects.requireNonNull(customScript, "Attempt to create null custom script");
         String inum = customScript.getInum();
         if (StringHelper.isEmpty(inum)) {
             inum = UUID.randomUUID().toString();
         }
         
-        logger.info("StringUtils.isBlank(customScript.getScript():{}, addScriptTemplate:{}", StringUtils.isBlank(customScript.getScript()), addScriptTemplate);
+        logger.error("StringUtils.isBlank(customScript.getScript():{}, addScriptTemplate:{}", StringUtils.isBlank(customScript.getScript()), addScriptTemplate);
         if (StringUtils.isBlank(customScript.getScript()) && !addScriptTemplate) {
             logger.info("Do not add ScriptTemplate");
             customScript.setScript(""); // this will ensure that default Script Template is not added
@@ -317,11 +317,11 @@ public class CustomScriptResource extends ConfigBaseResource {
      * @param customScript
      */
     private void validateScriptLocationType(CustomScript customScript) {
-        logger.info("validate ScriptLocationType - customScript:{}", customScript);
+        logger.error("validate ScriptLocationType - customScript:{}", customScript);
         if (customScript == null || customScript.getLocationType() == null) {
             return;
         }
-        logger.trace("validate customScript.getLocationType().getValue():{}", customScript.getLocationType().getValue());
+        logger.error("validate customScript.getLocationType().getValue():{}", customScript.getLocationType().getValue());
 
         if (ScriptLocationType.LDAP.getValue().equalsIgnoreCase(customScript.getLocationType().getValue())) {
 

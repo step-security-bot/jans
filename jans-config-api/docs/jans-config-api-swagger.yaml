@@ -3087,6 +3087,8 @@ paths:
                         "baseDn": "inum=1800.768b3d38-a6e8-4be4-93d1-72df33d34fd6,ou=clients,o=jans",
                         "inum": "1800.768b3d38-a6e8-4be4-93d1-72df33d34fd6"
                     }
+        "400":
+          description: Bad Request
         "401":
           description: Unauthorized
         "500":
@@ -7539,15 +7541,15 @@ components:
           type: boolean
         adminCanView:
           type: boolean
-        adminCanEdit:
+        userCanView:
+          type: boolean
+        userCanEdit:
           type: boolean
         userCanAccess:
           type: boolean
-        userCanView:
+        adminCanEdit:
           type: boolean
         whitePagesCanView:
-          type: boolean
-        userCanEdit:
           type: boolean
         baseDn:
           type: string
@@ -8268,6 +8270,8 @@ components:
           type: object
           additionalProperties:
             type: string
+        fapi:
+          type: boolean
         allResponseTypesSupported:
           uniqueItems: true
           type: array
@@ -8277,8 +8281,6 @@ components:
             - code
             - token
             - id_token
-        fapi:
-          type: boolean
     AuthenticationFilter:
       required:
       - baseDn
@@ -9132,14 +9134,14 @@ components:
           type: boolean
         internal:
           type: boolean
-        locationPath:
-          type: string
         locationType:
           type: string
           enum:
           - ldap
           - db
           - file
+        locationPath:
+          type: string
         baseDn:
           type: string
     ScriptError:
