@@ -48,10 +48,12 @@ The client can register a list of URIs as a value for redirect URI parameter. Re
 
 ### Key Rotation
 
-Janssen Server allows clients to configure keys using JWKS or by providing a [JWKS_URI](https://www.rfc-editor.org/rfc/rfc7591#section-2). Use of this parameter is preferred over the "jwks" parameter, as it allows for easier key rotation.
+Janssen Server allows clients to configure static set of keys using `JWKS` or specify a URI as `JWKS URI` where client
+is exposing its key set. For client who can host keys and expose a URI, it is **recommended** to use `JWKS URI` instead of
+static `JWKS` key set. Using `JWKS URI` enables client to rotate its cryptographic keys without having to change the
+client configuration on Janssen Server.
 
-
-### Cryptographic and Encryption Algorithms
+### Selecting Algorithms for Encryption and Signing
 
 The client can select algorithms for cryptographic and encryption during client configuration. Janssen 
 Server supports a list of algorithms as listed in response of Janssen Server's well-known
@@ -63,23 +65,16 @@ https://janssen.server.host/jans-auth/.well-known/openid-configuration
 
 Claims that list supported algorithms:
 
+- id_token_encryption_alg_values_supported
+- id_token_signing_alg_values_supported
 - userinfo_encryption_enc_values_supported
 - userinfo_signing_alg_values_supported
 - userinfo_encryption_alg_values_supported
-- authorization_encryption_alg_values_supported
-- authorization_encryption_enc_values_supported
-- authorization_signing_alg_values_supported
+- access_token_signing_alg_values_supported
 - request_object_signing_alg_values_supported
 - request_object_encryption_alg_values_supported
 - request_object_encryption_alg_values_supported
-- id_token_encryption_alg_values_supported
-- id_token_signing_alg_values_supported
-- access_token_signing_alg_values_supported
-- backchannel_authentication_request_signing_alg_values_supported
-- dpop_signing_alg_values_supported
  
-Refer to [crypto section] of Janssen Server administration documentation to understand more.
-
 ## Grants
 
 
