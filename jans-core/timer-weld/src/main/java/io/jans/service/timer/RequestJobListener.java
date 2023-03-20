@@ -6,18 +6,17 @@
 
 package io.jans.service.timer;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-
 import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
-
 import org.jboss.weld.context.bound.BoundRequestContext;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.quartz.JobListener;
 import org.slf4j.Logger;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Yuriy Movchan Date: 04/04/2017
@@ -56,7 +55,7 @@ public class RequestJobListener implements JobListener {
         requestContext.associate(requestDataStore);
         requestContext.activate();
 
-        log.debug("Bound request started");
+//        log.debug("Bound request started");
     }
 
     protected void endRequest(JobExecutionContext context) {
@@ -66,7 +65,7 @@ public class RequestJobListener implements JobListener {
         } finally {
             requestContext.dissociate((Map<String, Object>) context.get(REQUEST_DATA_STORE_KEY));
         }
-        log.debug("Bound request ended");
+//        log.debug("Bound request ended");
     }
 
 }

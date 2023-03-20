@@ -35,9 +35,9 @@ public abstract class BaseCacheService implements CacheInterface {
             return null;
         }
 
-    	log.trace("Request data, key '{}'", key);
+//    	log.trace("Request data, key '{}'", key);
     	Object value = cacheProvider.get(key);
-    	log.trace("Loaded data, key '{}': '{}'", key, value);
+//    	log.trace("Loaded data, key '{}': '{}'", key, value);
 
     	return value;
     }
@@ -56,10 +56,10 @@ public abstract class BaseCacheService implements CacheInterface {
 
         final Object value = get(key);
         if (value != null) {
-            log.trace("Loaded from cache, key: '{}'", key);
+//            log.trace("Loaded from cache, key: '{}'", key);
             return (T) value;
         } else {
-            log.trace("Key not in cache. Searching value via load function, key: '{}'", key);
+//            log.trace("Key not in cache. Searching value via load function, key: '{}'", key);
             final T loaded = loadFunction.get();
             if (loaded == null) {
                 log.trace("Key not in cache. There is no value, key: '{}'", key);
@@ -82,7 +82,7 @@ public abstract class BaseCacheService implements CacheInterface {
 			return;
 		}
 		
-    	log.trace("Put data, key '{}': '{}'", key, object);
+//    	log.trace("Put data, key '{}': '{}'", key, object);
 		cacheProvider.put(expirationInSeconds, key, object);
 	}
 
@@ -93,7 +93,7 @@ public abstract class BaseCacheService implements CacheInterface {
 			return;
 		}
 		
-    	log.trace("Remove data, key '{}'", key);
+//    	log.trace("Remove data, key '{}'", key);
 		cacheProvider.remove(key);
 	}
 
@@ -137,7 +137,7 @@ public abstract class BaseCacheService implements CacheInterface {
 			expiration = Integer.parseInt(expirationInSeconds);
 		} catch (NumberFormatException ex) {
 			// Use default expiration
-			log.trace("Using default expiration instead of expirationInSeconds: {}", expirationInSeconds);
+//			log.trace("Using default expiration instead of expirationInSeconds: {}", expirationInSeconds);
 		}
         put(expiration, key, object);
     }
