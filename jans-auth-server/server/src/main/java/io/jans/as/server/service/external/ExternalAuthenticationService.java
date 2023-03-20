@@ -356,6 +356,14 @@ public class ExternalAuthenticationService extends ExternalScriptService {
     public CustomScriptConfiguration determineCustomScriptConfiguration(AuthenticationScriptUsageType usageType, List<String> acrValues) {
         List<String> authModes = getAuthModesByAcrValues(acrValues);
 
+        log.debug(">>>>>>>>>>>>>>>>>");
+        log.debug("authModes: " + authModes);
+
+        log.debug("SCRIPTS >>>>>>>>>>>>>>>>>");
+        for (Map.Entry<String, CustomScriptConfiguration> s : customScriptConfigurationsNameMap.entrySet()) {
+            log.debug("entry: " + s.getKey() + ", value: " + s.getValue().getName());
+        }
+
         if (authModes.size() > 0) {
             for (String authMode : authModes) {
                 for (CustomScriptConfiguration customScriptConfiguration : this.customScriptConfigurationsMapByUsageType.get(usageType) ) {
