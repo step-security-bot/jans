@@ -19,10 +19,10 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.min-version>3.3.9</maven.min-version>
 
-		<jans-core.version>${project.version}</jans-core.version>
-		<jans-eleven.version>${project.version}</jans-eleven.version>
-		<jans-notify.version>${project.version}</jans-notify.version>
-		<jans-fido2.version>${project.version}</jans-fido2.version>
+		<jans-core.version>1.0.11-SNAPSHOT</jans-core.version>
+		<jans-eleven.version>1.0.11-SNAPSHOT</jans-eleven.version>
+		<jans-notify.version>1.0.11-SNAPSHOT</jans-notify.version>
+		<jans-fido2.version>1.0.11-SNAPSHOT</jans-fido2.version>
 
 		<jakarta.jms.api.version>2.0.3</jakarta.jms.api.version>
 		<activemq.version>5.15.14</activemq.version>
@@ -147,42 +147,42 @@
 			<dependency>
 				<groupId>io.jans</groupId>
 				<artifactId>jans-auth-model</artifactId>
-				<version>${project.version}</version>
+				<version>1.0.11-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>io.jans</groupId>
 				<artifactId>jans-auth-persistence-model</artifactId>
-				<version>${project.version}</version>
+				<version>1.0.11-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>io.jans</groupId>
 				<artifactId>jans-auth-test-model</artifactId>
-				<version>${project.version}</version>
+				<version>1.0.11-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>io.jans</groupId>
 				<artifactId>jans-auth-common</artifactId>
-				<version>${project.version}</version>
+				<version>1.0.11-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>io.jans</groupId>
 				<artifactId>jans-fido2-server</artifactId>
-				<version>${project.version}</version>
+				<version>1.0.11-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>io.jans</groupId>
 				<artifactId>jans-fido2-client</artifactId>
-				<version>${project.version}</version>
+				<version>1.0.11-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>io.jans</groupId>
 				<artifactId>jans-auth-client</artifactId>
-				<version>${project.version}</version>
+				<version>1.0.11-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>io.jans</groupId>
 				<artifactId>jans-auth-static</artifactId>
-				<version>${project.version}</version>
+				<version>1.0.11-SNAPSHOT</version>
 			</dependency>
 
 			<dependency>

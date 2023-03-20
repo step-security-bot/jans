@@ -67,7 +67,7 @@
 							<packaging>jar</packaging>
 							<artifactId>${project.artifactId}</artifactId>
 							<groupId>${project.groupId}</groupId>
-							<version>${project.version}</version>
+							<version>1.0.11-SNAPSHOT</version>
 							<file>
 								${project.build.directory}/${project.build.finalName}.jar
 							</file>
@@ -83,7 +83,7 @@
 							<packaging>war</packaging>
 							<artifactId>${project.artifactId}</artifactId>
 							<groupId>${project.groupId}</groupId>
-							<version>${project.version}</version>
+							<version>1.0.11-SNAPSHOT</version>
 							<file>
 								${project.build.directory}/${project.build.finalName}.war
 							</file>
@@ -397,7 +397,7 @@
         <dependency>
             <groupId>io.jans</groupId>
             <artifactId>agama-engine</artifactId>
-            <version>${project.version}</version>
+            <version>1.0.11-SNAPSHOT</version>
         </dependency>
 
 		<!-- Weld -->
@@ -1105,7 +1105,7 @@
 				<dependency>
 					<groupId>io.jans</groupId>
 					<artifactId>jans-auth-model</artifactId>
-					<version>${project.version}</version>
+					<version>1.0.11-SNAPSHOT</version>
 					<type>test-jar</type>
 					<scope>test</scope>
 				</dependency>
