@@ -354,11 +354,9 @@ public class ExternalAuthenticationService extends ExternalScriptService {
     }
 
     public CustomScriptConfiguration determineCustomScriptConfiguration(AuthenticationScriptUsageType usageType, List<String> acrValues) {
-        if (acrValues.size() == 1 && OxConstants.SCRIPT_TYPE_INTERNAL_RESERVED_NAME.equalsIgnoreCase(acrValues.get(0))) {
-            return getCustomScriptConfigurationByName(OxConstants.SCRIPT_TYPE_INTERNAL_RESERVED_NAME);
-        }
-
         List<String> authModes = getAuthModesByAcrValues(acrValues);
+
+        log.debug("authModes {}, useHighestLevelScriptIfAcrScriptNotFound {}, usageType {}", authModes, appConfiguration.getUseHighestLevelScriptIfAcrScriptNotFound(), usageType);
 
         if (authModes.size() > 0) {
             for (String authMode : authModes) {

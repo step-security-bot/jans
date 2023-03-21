@@ -289,12 +289,16 @@ public class AuthorizeAction {
             boolean useExternalAuthenticator = externalAuthenticationService.isEnabled(AuthenticationScriptUsageType.INTERACTIVE);
             boolean skipScript = acrValuesList.isEmpty() && BooleanUtils.isFalse(appConfiguration.getUseHighestLevelScriptIfAcrScriptNotFound())
                     && OxConstants.SCRIPT_TYPE_INTERNAL_RESERVED_NAME.equalsIgnoreCase(defaultAuthenticationMode.getName());
+
+            log.debug("useExternalAuthenticator{} , skipScript {}, acrValuesList {}", useExternalAuthenticator, skipScript, acrValuesList);
             if (useExternalAuthenticator && !skipScript) {
                 if (acrValuesList.isEmpty()) {
                     acrValuesList = Arrays.asList(defaultAuthenticationMode.getName());
                 }
 
                 CustomScriptConfiguration customScriptConfiguration = externalAuthenticationService.determineCustomScriptConfiguration(AuthenticationScriptUsageType.INTERACTIVE, acrValuesList);
+
+                log.debug("selected script {}", (customScriptConfiguration != null ? customScriptConfiguration.getName() : null));
 
                 if (customScriptConfiguration == null) {
                     log.error("Failed to get CustomScriptConfiguration. auth_step: {}, acr_values: {}", 1, this.acrValues);
