@@ -209,6 +209,7 @@ public abstract class LoggerService {
             final LoggerContext ctx = LoggerContext.getContext(false);
             ctx.getConfiguration().getRootLogger().setLevel(level);
             ctx.reconfigure();
+            ctx.getConfiguration().getRootLogger().setLevel(level);
             LoggerContext loggerContext = LoggerContext.getContext(false);
 
             int count = 0;
