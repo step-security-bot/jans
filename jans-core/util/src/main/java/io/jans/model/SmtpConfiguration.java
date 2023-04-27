@@ -199,4 +199,18 @@ public class SmtpConfiguration implements java.io.Serializable {
         this.signingAlgorithm = signingAlgorithm;
     }
 
+    @Override
+    public String toString() {
+        return "SmtpConfiguration [host=" + host + ", port=" + port + ", connectProtection=" + connectProtection
+                + ", serverTrust=" + serverTrust + ", fromName=" + fromName + ", fromEmailAddress=" + fromEmailAddress
+                + ", requiresAuthentication=" + requiresAuthentication + ", smtpAuthenticationAccountUsername="
+                + smtpAuthenticationAccountUsername + ", smtpAuthenticationAccountPassword="
+                + smtpAuthenticationAccountPassword + ", smtpAuthenticationAccountPasswordDecrypted="
+                + smtpAuthenticationAccountPasswordDecrypted + ", keyStore=" + keyStore + ", keyStorePassword="
+                + keyStorePassword + ", keyStorePasswordDecrypted=" + keyStorePasswordDecrypted + ", keyStoreAlias="
+                + keyStoreAlias + ", signingAlgorithm=" + signingAlgorithm + "]";
+    }
+
+    
+    
 }

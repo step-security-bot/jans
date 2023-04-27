@@ -74,4 +74,11 @@ public class SmtpTest implements java.io.Serializable {
     public void setMessage(final String message) {
     	this.message = message;
     }
+
+    @Override
+    public String toString() {
+        return "SmtpTest [sign=" + sign + ", subject=" + subject + ", message=" + message + "]";
+    }
+    
+    
 }

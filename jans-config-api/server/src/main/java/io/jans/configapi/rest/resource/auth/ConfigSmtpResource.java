@@ -143,10 +143,12 @@ public class ConfigSmtpResource extends ConfigBaseResource {
     @ProtectedApi(scopes = { ApiAccessConstants.SMTP_WRITE_ACCESS }, groupScopes = {
             ApiAccessConstants.SMTP_WRITE_ACCESS }, superScopes = { ApiAccessConstants.SUPER_ADMIN_WRITE_ACCESS })
     public Response testSmtpConfiguration(@Valid SmtpTest smtpTest) throws EncryptionException {
-        log.debug("smtpTest:{}", smtpTest);
+        log.error("smtpTest.getMessage():{}, smtpTest.getSign():{}, smtpTest.getSubject():{}", smtpTest.getMessage(), smtpTest.getSign(), smtpTest.getSubject());
         SmtpConfiguration smtpConfiguration = configurationService.getConfiguration().getSmtpConfiguration();
         smtpConfiguration.setSmtpAuthenticationAccountPasswordDecrypted(encryptionService.decrypt(smtpConfiguration.getSmtpAuthenticationAccountPassword()));
         smtpConfiguration.setKeyStorePasswordDecrypted(encryptionService.decrypt(smtpConfiguration.getKeyStorePassword()));
+        
+        log.error("smtpConfiguration.getSmtpAuthenticationAccountPasswordDecrypted():{}, smtpConfiguration.getKeyStorePasswordDecrypted():{} ",smtpConfiguration.getSmtpAuthenticationAccountPasswordDecrypted(), smtpConfiguration.getKeyStorePasswordDecrypted());
         boolean status = false;
         if (smtpTest.getSign()) {
             log.debug("smtpTest: trying to send signed email");
