@@ -8,9 +8,7 @@ tags:
 # Config-api-configuration
 
 ## Overview
-[Jans Config Api](https://github.com/JanssenProject/jans/tree/vreplace-janssen-version/jans-config-api) configuration enables to manage application-level configuration.
-
-![](https://github.com/JanssenProject/jans/raw/vreplace-janssen-version/docs/assets/config-api-configuration.png)
+[Jans Config Api](https://github.com/JanssenProject/jans/tree/main/jans-config-api) configuration enables to manage application-level configuration.
 
 ### Existing Config-api dynamic configuration
 

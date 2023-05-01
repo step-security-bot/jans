@@ -163,13 +163,13 @@ public class MailService {
 
     private boolean sendMail(String from, String fromDisplayName, String to, String toDisplayName, String subject,
             String message, String htmlMessage, boolean signMessage) {
-        log.error("sendingMail using smtpConfiguration:{}", smtpConfiguration);
+
         if (smtpConfiguration == null) {
             log.error("Failed to send message from '{}' to '{}' because the SMTP configuration isn't valid!", from, to);
             return false;
         }
 
-        log.error("Host name: " + smtpConfiguration.getHost() + ", port: " + smtpConfiguration.getPort() + ", connection time out: "
+        log.debug("Host name: " + smtpConfiguration.getHost() + ", port: " + smtpConfiguration.getPort() + ", connection time out: "
                 + this.connectionTimeout);
 
         String mailFrom = from;
@@ -187,11 +187,8 @@ public class MailService {
         props.put("mail.from", mailFrom);
 
         SmtpConnectProtectionType smtpConnectProtect = smtpConfiguration.getConnectProtection();
-        
-        log.error(" smtpConnectProtect:{}",smtpConnectProtect);
 
         if (smtpConnectProtect == SmtpConnectProtectionType.START_TLS) {
-            log.error("SmtpConnectProtectionType.START_TLS");
             props.put("mail.transport.protocol", "smtp");
 
             props.put("mail.smtp.host", smtpConfiguration.getHost());
@@ -208,7 +205,6 @@ public class MailService {
             props.put("mail.smtp.starttls.required", true);
         }
         else if (smtpConnectProtect == SmtpConnectProtectionType.SSL_TLS) {
-            log.error("SmtpConnectProtectionType.START_TLS");
             props.put("mail.transport.protocol.rfc822", "smtps");
 
             props.put("mail.smtps.host", smtpConfiguration.getHost());
@@ -224,7 +220,6 @@ public class MailService {
             props.put("mail.smtp.ssl.enable", true);
         } 
         else {
-            log.error("NOT START_TLS OR SSL_TLS");
             props.put("mail.transport.protocol", "smtp");
 
             props.put("mail.smtp.host", smtpConfiguration.getHost());
@@ -233,10 +228,9 @@ public class MailService {
             props.put("mail.smtp.timeout", this.connectionTimeout);
         }
 
-        log.error("smtpConfiguration.isRequiresAuthentication():{}",smtpConfiguration.isRequiresAuthentication());
         Session session = null;
         if (smtpConfiguration.isRequiresAuthentication()) {
-            log.error("isRequiresAuthentication()---------------");
+            
             if (smtpConnectProtect == SmtpConnectProtectionType.SSL_TLS) {
                 props.put("mail.smtps.auth", "true");
             }
@@ -246,7 +240,7 @@ public class MailService {
 
             final String userName = smtpConfiguration.getSmtpAuthenticationAccountUsername();
             final String password = smtpConfiguration.getSmtpAuthenticationAccountPasswordDecrypted();
-            log.error("isRequiresAuthentication()---------------userName:{}, password:{}",userName, password);
+
             session = Session.getInstance(props, new javax.mail.Authenticator() {
                 protected PasswordAuthentication getPasswordAuthentication() {
                     return new PasswordAuthentication(userName, password);
