@@ -387,7 +387,6 @@ public class AttestationService {
 					credentialParametersNodeRS256.arrayNode().addObject();
 					credentialParametersNodeRS256.put("type", "public-key");
 					credentialParametersNodeRS256.put("alg", coseRSAAlgorithm.getNumericValue());
-					break;
 				}
 			}
 
@@ -403,7 +402,6 @@ public class AttestationService {
 					credentialParametersNodeRS256.arrayNode().addObject();
 					credentialParametersNodeRS256.put("type", "public-key");
 					credentialParametersNodeRS256.put("alg", coseEC2Algorithm.getNumericValue());
-					break;
 				}
 			}
 		}
