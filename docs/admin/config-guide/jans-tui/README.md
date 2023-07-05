@@ -7,10 +7,11 @@ tags:
 - tui
 ---
 
-## Overview
+# TUI
 
-The "Text User Interface" or "TUI" is a tool for admins to perform *ad
-hoc* configuration of the Janssen Project software components.
+The "Text-based User Interface" or "TUI" is a tool for admins to perform *ad
+hoc* configuration of the Janssen Project software components. Like command-line interface, TUI can be launched and 
+used from terminal.
 
 You can run it by executing:
 
