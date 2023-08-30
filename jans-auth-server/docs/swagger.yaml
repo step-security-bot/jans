@@ -1229,6 +1229,7 @@ paths:
               required:
                 - redirect_uris
               type: object
+              defaultModelRendering: model
               properties:
                 redirect_uris:
                   type: array
