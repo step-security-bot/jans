@@ -3,7 +3,7 @@
 <Configuration packages="io.jans.log">
 	<Appenders>
 		<Console name="STDOUT" target="SYSTEM_OUT">
-			<PatternLayout pattern="%d %-5p [%t] [%C{6}] (%F:%L) - %m%n" />
+			<PatternLayout pattern="%d %-5p [%t] (%C{6}:%L): %m%n" />
 		</Console>
 
 		<RollingFile name="JANS_AUTH_HTTP_REQUEST_RESPONSE_FILE" fileName="${sys:log.base}/logs/http_request_response.log" filePattern="${sys:log.base}/logs/http_request_response-%d{yyyy-MM-dd}-%i.log">
@@ -19,7 +19,7 @@
 
 		<RollingFile name="FILE" fileName="${sys:log.base}/logs/jans-auth.log" filePattern="${sys:log.base}/logs/jans-auth-%d{yyyy-MM-dd}-%i.log">
 
-			<PatternLayout pattern="%d %-5p [%t] %X{X-Correlation-Id} [%C{6}] (%F:%L) - %m%n" />
+			<PatternLayout pattern="%d %-5p [%8.8t] %-40.40c{6}#%L : %m%n" />
 
 			<Policies>
 				<TimeBasedTriggeringPolicy interval="1" modulate="true" />
@@ -64,7 +64,7 @@
 
 		<RollingFile name="JANS_AUTH_SCRIPT_LOG_FILE" fileName="${sys:log.base}/logs/jans-auth_script.log" filePattern="${sys:log.base}/logs/jans-auth_script-%d{yyyy-MM-dd}-%i.log">
 
-			<PatternLayout pattern="%d %-5p [%t] %X{X-Correlation-Id} [%C{6}] (%F:%L) - %m%n" />
+			<PatternLayout pattern="%d %-5p [%8.8t] %-40.40c{6}#%L : %m%n" />
 
 			<Policies>
 				<TimeBasedTriggeringPolicy interval="1" modulate="true" />
@@ -87,7 +87,7 @@
 
 	<Loggers>
 		<!-- ############### Gluu ################# -->
-		<Logger name="io.jans" level="${log4j.default.log.level}" />
+		<Logger name="io.jans" level="debug" />
 
 		<!-- EMB-6, JMS activation throws an error due to deployment ordering, but as there is a timeout and retry the tests pass. Hide the error message -->
 		<Logger name="jboss.resource.adapter.jms.inflow.JmsActivation" level="error" />

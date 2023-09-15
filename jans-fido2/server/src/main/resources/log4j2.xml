@@ -3,11 +3,11 @@
 <Configuration packages="io.jans.log">
     <Appenders>
         <Console name="STDOUT" target="SYSTEM_OUT">
-            <PatternLayout pattern="%d{dd-MM HH:mm:ss.SSS} %-5p [%t] [%C{6}] (%F:%L) - %m%n" />
+			<PatternLayout pattern="%d %-5p [%8.8t] %-40.40c{6}#%L : %m%n" />
         </Console>
 
         <RollingFile name="FILE" fileName="${sys:log.base}/logs/fido2.log" filePattern="${sys:log.base}/logs/fido2-%d{yyyy-MM-dd}-%i.log">
-            <PatternLayout pattern="%d{dd-MM HH:mm:ss.SSS} %-5p [%t] [%C{6}] (%F:%L) - %m%n" />
+			<PatternLayout pattern="%d %-5p [%8.8t] %-40.40c{6}#%L : %m%n" />
 
             <Policies>
                 <TimeBasedTriggeringPolicy interval="1" modulate="true" />
@@ -50,7 +50,7 @@
 
     <Loggers>
 		<!-- ############### Gluu ################# -->
-		<Logger name="io.jans" level="${log4j.default.log.level}" />
+		<Logger name="io.jans" level="debug" />
 
 		<Logger name="io.jans.orm" level="${log4j.default.log.level}" additivity="false">
 			<AppenderRef ref="FIDO2_PERSISTENCE_FILE" />

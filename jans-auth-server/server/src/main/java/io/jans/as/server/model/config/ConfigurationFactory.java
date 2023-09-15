@@ -278,7 +278,7 @@ public class ConfigurationFactory {
             return false;
         }
 
-        log.trace("LDAP revision: {}, server revision: {}", persistenceConf.getRevision(), loadedRevision);
+//        log.trace("LDAP revision: {}, server revision: {}", persistenceConf.getRevision(), loadedRevision);
         return persistenceConf.getRevision() > this.loadedRevision;
     }
 

@@ -59,8 +59,8 @@ public class CleanerTimer {
     public static final int BATCH_SIZE = 1000;
     private static final int DEFAULT_INTERVAL = 30; // 30 seconds
 
-    @Inject
-    private Logger log;
+//    @Inject
+//    private Logger log;
 
     @Inject
     private PersistenceEntryManager entryManager;
@@ -91,7 +91,7 @@ public class CleanerTimer {
     private AtomicBoolean isActive;
 
     public void initTimer() {
-        log.debug("Initializing Cleaner Timer");
+//        log.debug("Initializing Cleaner Timer");
         this.isActive = new AtomicBoolean(false);
 
         // Schedule to start cleaner every 30 seconds
@@ -121,8 +121,8 @@ public class CleanerTimer {
     private boolean isStartProcess() {
         int interval = appConfiguration.getCleanServiceInterval();
         if (interval < 0) {
-            log.info("Cleaner Timer is disabled.");
-            log.warn("Cleaner Timer Interval (cleanServiceInterval in oxauth configuration) is negative which turns OFF internal clean up by the server. Please set it to positive value if you wish internal clean up timer run.");
+//            log.info("Cleaner Timer is disabled.");
+//            log.warn("Cleaner Timer Interval (cleanServiceInterval in oxauth configuration) is negative which turns OFF internal clean up by the server. Please set it to positive value if you wish internal clean up timer run.");
             return false;
         }
 
@@ -136,7 +136,7 @@ public class CleanerTimer {
     public void processImpl() {
         try {
             if (!isStartProcess()) {
-                log.trace("Starting conditions aren't reached");
+//                log.trace("Starting conditions aren't reached");
                 return;
             }
 
@@ -156,22 +156,22 @@ public class CleanerTimer {
 
                 processedBaseDns.add(processedKey);
 
-                if (log.isDebugEnabled())
-                    log.debug("Start clean up for baseDn: {}, class: {}", baseDn.getValue(), baseDn.getValue());
+//                if (log.isDebugEnabled())
+//                    log.debug("Start clean up for baseDn: {}, class: {}", baseDn.getValue(), baseDn.getValue());
 
                 final Stopwatch started = Stopwatch.createStarted();
 
                 int removed = cleanup(baseDn, now, chunkSize);
 
-                if (log.isDebugEnabled())
-                    log.debug("Finished clean up for baseDn: {}, takes: {}ms, removed items: {}", baseDn, started.elapsed(TimeUnit.MILLISECONDS), removed);
+//                if (log.isDebugEnabled())
+//                    log.debug("Finished clean up for baseDn: {}, takes: {}ms, removed items: {}", baseDn, started.elapsed(TimeUnit.MILLISECONDS), removed);
             }
 
             processCache(now);
 
             this.lastFinishedTime = System.currentTimeMillis();
         } catch (Exception e) {
-            log.error("Failed to process clean up.", e);
+//            log.error("Failed to process clean up.", e);
         }
     }
 
@@ -204,10 +204,10 @@ public class CleanerTimer {
                     Filter.createLessOrEqualFilter("exp", entryManager.encodeTime(baseDn.getKey(), now)));
 
             int removedCount = entryManager.remove(baseDn.getKey(), baseDn.getValue(), filter, batchSize);
-            log.trace("Removed {} entries from {}", removedCount, baseDn.getKey());
+//            log.trace("Removed {} entries from {}", removedCount, baseDn.getKey());
             return removedCount;
         } catch (Exception e) {
-            log.error("Failed to perform clean up.", e);
+//            log.error("Failed to perform clean up.", e);
         }
 
         return 0;
@@ -217,7 +217,7 @@ public class CleanerTimer {
         try {
             cacheProvider.cleanup(now);
         } catch (Exception e) {
-            log.error("Failed to clean up cache.", e);
+//            log.error("Failed to cClean up cache.", e);
         }
     }
 }
