@@ -94,13 +94,7 @@ public class ConfigSmtpResource extends ConfigBaseResource {
             ApiAccessConstants.SUPER_ADMIN_WRITE_ACCESS })
     public Response setupSmtpConfiguration(@Valid SmtpConfiguration smtpConfiguration) throws EncryptionException {
         log.debug(SMTP_CONFIGURATION + ":{}", smtpConfiguration);
-        encryptPassword(smtpConfiguration);
-        GluuConfiguration configurationUpdate = configurationService.getConfiguration();
-        log.debug("configurationUpdate:{}", configurationUpdate);
-        configurationUpdate.setSmtpConfiguration(smtpConfiguration);
-        configurationService.updateConfiguration(configurationUpdate);
-        smtpConfiguration = configurationService.getConfiguration().getSmtpConfiguration();
-        decryptPassword(smtpConfiguration);
+        saveSmtpConfiguration(smtpConfiguration);
         log.debug("After creeation " + SMTP_CONFIGURATION + ":{}", smtpConfiguration);
         return Response.status(Response.Status.CREATED).entity(smtpConfiguration).build();
     }
@@ -133,7 +127,7 @@ public class ConfigSmtpResource extends ConfigBaseResource {
     @Operation(summary = "Signing Test SMTP server configuration", description = "Signing Test SMTP server configuration", operationId = "test-config-smtp", tags = {
     "Configuration – SMTP" }, security = @SecurityRequirement(name = "oauth2", scopes = {
             ApiAccessConstants.SMTP_WRITE_ACCESS }))
-    @RequestBody(description = "SmtpTest object", content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = SmtpTest.class), examples = @ExampleObject(name = "Request json example", value = "example/auth/smtp/smtp_test.json")))    
+    @RequestBody(description = "SmtpTest object", content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = SmtpConfiguration.class), examples = @ExampleObject(name = "Request json example", value = "example/auth/smtp/smtp_test.json")))    
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Ok", content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(name = "status", type = "boolean", description = "boolean value true if successful"))),
             @ApiResponse(responseCode = "401", description = "Unauthorized"),
@@ -142,14 +136,17 @@ public class ConfigSmtpResource extends ConfigBaseResource {
     @Path(ApiConstants.TEST)
     @ProtectedApi(scopes = { ApiAccessConstants.SMTP_WRITE_ACCESS }, groupScopes = {
             ApiAccessConstants.SMTP_WRITE_ACCESS }, superScopes = { ApiAccessConstants.SUPER_ADMIN_WRITE_ACCESS })
-    public Response testSmtpConfiguration(@Valid SmtpTest smtpTest) throws EncryptionException {
-        log.debug("smtpTest:{}", smtpTest);
-        SmtpConfiguration smtpConfiguration = configurationService.getConfiguration().getSmtpConfiguration();
-        smtpConfiguration.setSmtpAuthenticationAccountPasswordDecrypted(encryptionService.decrypt(smtpConfiguration.getSmtpAuthenticationAccountPassword()));
-        smtpConfiguration.setKeyStorePasswordDecrypted(encryptionService.decrypt(smtpConfiguration.getKeyStorePassword()));
+    public Response testSmtpConfiguration(@Valid SmtpConfiguration smtpConfiguration) throws EncryptionException {
+        log.info("smtpConfiguration:{}", smtpConfiguration);
+        checkResourceNotNull(smtpConfiguration, "SMTP Configuration");
+        
+        log.info("Testing SMTP details - smtpConfiguration.getFromEmailAddress(), smtpConfiguration.getFromName():{}, smtpConfiguration.getHost(),  smtpConfiguration.getPort(),  smtpConfiguration.getKeyStore()", smtpConfiguration.getFromEmailAddress(), smtpConfiguration.getFromName(), smtpConfiguration.getHost() , smtpConfiguration.getPort(),  smtpConfiguration.getKeyStore());
+
+        saveSmtpConfiguration(smtpConfiguration);
+        SmtpTest smtpTest = new SmtpTest();
         boolean status = false;
         if (smtpTest.getSign()) {
-            log.debug("smtpTest: trying to send signed email");
+            log.info("smtpTest: trying to send signed email");
             status = mailService.sendMailSigned(smtpConfiguration.getFromEmailAddress(),
                     smtpConfiguration.getFromName(), smtpConfiguration.getFromEmailAddress(), null,
                     smtpTest.getSubject(), smtpTest.getMessage(),
@@ -180,6 +177,19 @@ public class ConfigSmtpResource extends ConfigBaseResource {
         configurationUpdate.setSmtpConfiguration(new SmtpConfiguration());
         configurationService.updateConfiguration(configurationUpdate);
         return Response.noContent().build();
+    }
+    
+    private SmtpConfiguration saveSmtpConfiguration(SmtpConfiguration smtpConfiguration) throws EncryptionException {
+        log.info("Save smtpConfiguration:{}", smtpConfiguration);
+        checkResourceNotNull(smtpConfiguration, "SMTP Configuration");
+        encryptPassword(smtpConfiguration);
+        GluuConfiguration configurationUpdate = configurationService.getConfiguration();
+        log.debug("configurationUpdate:{}", configurationUpdate);
+        configurationUpdate.setSmtpConfiguration(smtpConfiguration);
+        configurationService.updateConfiguration(configurationUpdate);
+        smtpConfiguration = configurationService.getConfiguration().getSmtpConfiguration();
+        decryptPassword(smtpConfiguration);
+        return smtpConfiguration;
     }
 
     private SmtpConfiguration encryptPassword(SmtpConfiguration smtpConfiguration) throws EncryptionException {

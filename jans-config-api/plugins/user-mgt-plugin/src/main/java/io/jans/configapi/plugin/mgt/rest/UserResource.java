@@ -158,6 +158,7 @@ public class UserResource extends BaseResource {
         checkMissingAttributes(user, null);
         ignoreCustomAttributes(user, removeNonLDAPAttributes);
 
+        logger.debug("Create user - user.getCustomObjectClasses():{}", user.getCustomObjectClasses());
         user = userMgmtSrv.addUser(user, true);
         logger.debug("User created {}", user);
 
@@ -204,6 +205,7 @@ public class UserResource extends BaseResource {
         ignoreCustomAttributes(user, removeNonLDAPAttributes);
 
         try {
+            logger.debug("Update user - user.getCustomObjectClasses():{}", user.getCustomObjectClasses());
             user = userMgmtSrv.updateUser(user);
             logger.info("Updated user:{}", user);
         } catch (Exception ex) {

@@ -319,10 +319,20 @@ public class UserMgmtService {
 
     public User ignoreCustomObjectClassesForNonLDAP(User user) {
         String persistenceType = configurationService.getPersistenceType();
-        logger.debug("persistenceType: {}, isLDAP?:{}, user.getCustomObjectClasses():{}", persistenceType, isLDAP(),
-                user.getCustomObjectClasses());
+        logger.debug("persistenceType: {}, isLDAP?:{}, user.getCustomObjectClasses():{}, appConfiguration.getPersonCustomObjectClassList:{}", persistenceType, isLDAP(),
+                user.getCustomObjectClasses(), appConfiguration.getPersonCustomObjectClassList());
 
-        if (!isLDAP()) {
+        if (isLDAP()) {
+            logger.info(
+                    "persistenceType is LDAP Setting CustomObjectClasses :{} ensure customObjectClasses is there, user.getCustomObjectClasses():{}, this.appConfiguration.getPersonCustomObjectClassList():{}",
+                    user.getCustomObjectClasses(), this.appConfiguration.getPersonCustomObjectClassList());
+            if (this.appConfiguration.getPersonCustomObjectClassList() != null
+                    && !this.appConfiguration.getPersonCustomObjectClassList().isEmpty()) {
+                user.setCustomObjectClasses(
+                        this.appConfiguration.getPersonCustomObjectClassList().stream().toArray(String[]::new));
+            }
+
+        } else {
             logger.info(
                     "Setting CustomObjectClasses :{} to null as its used only for LDAP and current persistenceType is {} ",
                     user.getCustomObjectClasses(), persistenceType);
@@ -346,10 +356,12 @@ public class UserMgmtService {
     }
 
     public User addUser(User user, boolean active) {
+        logger.debug("Adding user - user.getCustomObjectClasses():{}", user.getCustomObjectClasses());
         return userService.addUser(user, active);
     }
 
     public User updateUser(User user) {
+        logger.debug("Modifying user - user.getCustomObjectClasses():{}", user.getCustomObjectClasses());
         return userService.updateUser(user);
     }
 }

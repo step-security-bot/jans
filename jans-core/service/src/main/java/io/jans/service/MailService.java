@@ -163,27 +163,28 @@ public class MailService {
 
     private boolean sendMail(String from, String fromDisplayName, String to, String toDisplayName, String subject,
             String message, String htmlMessage, boolean signMessage) {
+        log.info("Mail details - smtpConfiguration:{}, from:{}, fromDisplayName:{}, to:{}, toDisplayName:{}, subject:{}, message:{}, htmlMessage:{}, signMessage:{}",smtpConfiguration, from, fromDisplayName, to, toDisplayName, subject, message,htmlMessage,signMessage);
 
         if (smtpConfiguration == null) {
             log.error("Failed to send message from '{}' to '{}' because the SMTP configuration isn't valid!", from, to);
             return false;
         }
 
-        log.debug("Host name: " + smtpConfiguration.getHost() + ", port: " + smtpConfiguration.getPort() + ", connection time out: "
+        log.info("Host name: " + smtpConfiguration.getHost() + ", port: " + smtpConfiguration.getPort() + ", connection time out: "
                 + this.connectionTimeout);
 
         String mailFrom = from;
         if (StringHelper.isEmpty(mailFrom)) {
             mailFrom = smtpConfiguration.getFromEmailAddress();
         }
-
+        log.info("From details - mailFrom:{},fromDisplayName:{}",mailFrom, fromDisplayName);
         String mailFromName = fromDisplayName;
         if (StringHelper.isEmpty(mailFromName)) {
             mailFromName = smtpConfiguration.getFromName();
         }
-
+      
         Properties props = new Properties();
-
+        log.info("From details -  mailFrom:{}, props:{}, props.size():{}", mailFrom, props, props.size());
         props.put("mail.from", mailFrom);
 
         SmtpConnectProtectionType smtpConnectProtect = smtpConfiguration.getConnectProtection();
