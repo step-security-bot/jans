@@ -662,6 +662,8 @@ paths:
                     }
         "401":
           description: Unauthorized
+        "406":
+          description: Not Acceptable
         "500":
           description: InternalServerError
       security:
@@ -750,6 +752,8 @@ paths:
                     }
         "401":
           description: Unauthorized
+        "406":
+          description: Not Acceptable
         "500":
           description: InternalServerError
       security:
@@ -7588,19 +7592,19 @@ components:
           $ref: '#/components/schemas/AttributeValidation'
         tooltip:
           type: string
-        userCanView:
-          type: boolean
-        adminCanView:
-          type: boolean
-        adminCanAccess:
-          type: boolean
-        userCanAccess:
-          type: boolean
-        adminCanEdit:
+        whitePagesCanView:
           type: boolean
         userCanEdit:
           type: boolean
-        whitePagesCanView:
+        adminCanEdit:
+          type: boolean
+        adminCanView:
+          type: boolean
+        userCanView:
+          type: boolean
+        userCanAccess:
+          type: boolean
+        adminCanAccess:
           type: boolean
         baseDn:
           type: string
@@ -7687,6 +7691,8 @@ components:
         requirePkce:
           type: boolean
         allowAllValueForRevokeEndpoint:
+          type: boolean
+        allowRevokeForOtherClients:
           type: boolean
         sectorIdentifierCacheLifetimeInMinutes:
           type: integer
@@ -7801,6 +7807,18 @@ components:
           items:
             type: string
         userInfoEncryptionEncValuesSupported:
+          type: array
+          items:
+            type: string
+        introspectionSigningAlgValuesSupported:
+          type: array
+          items:
+            type: string
+        introspectionEncryptionAlgValuesSupported:
+          type: array
+          items:
+            type: string
+        introspectionEncryptionEncValuesSupported:
           type: array
           items:
             type: string
@@ -8107,6 +8125,8 @@ components:
         introspectionAccessTokenMustHaveIntrospectionScope:
           type: boolean
         introspectionSkipAuthorization:
+          type: boolean
+        introspectionRestrictBasicAuthnToOwnTokens:
           type: boolean
         endSessionWithAccessToken:
           type: boolean
@@ -9099,6 +9119,12 @@ components:
           format: int32
         evidence:
           type: string
+        introspectionSignedResponseAlg:
+          type: string
+        introspectionEncryptedResponseAlg:
+          type: string
+        introspectionEncryptedResponseEnc:
+          type: string
     CustomObjectAttribute:
       type: object
       properties:
@@ -9351,14 +9377,14 @@ components:
           type: boolean
         internal:
           type: boolean
+        locationPath:
+          type: string
         locationType:
           type: string
           enum:
           - ldap
           - db
           - file
-        locationPath:
-          type: string
         baseDn:
           type: string
     ScriptError:

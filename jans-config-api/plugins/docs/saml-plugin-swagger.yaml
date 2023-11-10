@@ -147,13 +147,35 @@ paths:
       requestBody:
         description: Trust Relationship object
         content:
-          application/json:
+          multipart/form-data:
             schema:
-              $ref: '#/components/schemas/TrustRelationship'
+              $ref: '#/components/schemas/TrustRelationshipForm'
             examples:
               Request example:
                 description: Request example
-                value: ""
+                value: |
+                  {
+                          "clientId": "test2",
+                          "displayName": "Test Client 2",
+                          "description": "Test Client description 2",
+                          "rootUrl": "https://jans.com",
+                          "adminUrl": null,
+                          "baseUrl": "/realms/master/account/",
+                          "enabled": true,
+                          "alwaysDisplayInConsole": false,
+                          "clientAuthenticatorType": "client-secret",
+                          "secret": "secret123",
+                          "registrationAccessToken": null,
+                          "redirectUris": [
+                              "/realms/master/account/*"
+                          ],
+                          "webOrigins": [],
+                          "spMetaDataSourceType": "FILE",
+                          "releasedAttributes":[
+                          "inum=C4F7,ou=scopes,o=jans",
+                          "inum=10B2,ou=scopes,o=jans"
+                          ]
+                      }
       responses:
         "201":
           description: Newly created Trust Relationship
@@ -230,7 +252,29 @@ paths:
             examples:
               Request example:
                 description: Request example
-                value: ""
+                value: |
+                  {
+                          "clientId": "test2",
+                          "displayName": "Test Client 2",
+                          "description": "Test Client description 2",
+                          "rootUrl": "https://jans.com",
+                          "adminUrl": null,
+                          "baseUrl": "/realms/master/account/",
+                          "enabled": true,
+                          "alwaysDisplayInConsole": false,
+                          "clientAuthenticatorType": "client-secret",
+                          "secret": "secret123",
+                          "registrationAccessToken": null,
+                          "redirectUris": [
+                              "/realms/master/account/*"
+                          ],
+                          "webOrigins": [],
+                          "spMetaDataSourceType": "FILE",
+                          "releasedAttributes":[
+                          "inum=C4F7,ou=scopes,o=jans",
+                          "inum=10B2,ou=scopes,o=jans"
+                          ]
+                      }
       responses:
         "200":
           description: Ok

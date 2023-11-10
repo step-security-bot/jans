@@ -86,9 +86,9 @@ public class AttributesResource extends ConfigBaseResource {
                     escapeLog(limit), escapeLog(pattern), escapeLog(status), escapeLog(startIndex), escapeLog(sortBy),
                     escapeLog(sortOrder), escapeLog(fieldValuePair));
         }
-              
+
         SearchRequest searchReq = createSearchRequest(attributeService.getDnForAttribute(null), pattern, sortBy,
-                sortOrder, startIndex, limit, null, null, this.getMaxCount(),fieldValuePair, JansAttribute.class);
+                sortOrder, startIndex, limit, null, null, this.getMaxCount(), fieldValuePair, JansAttribute.class);
 
         return Response.ok(doSearch(searchReq, status)).build();
     }
@@ -104,7 +104,8 @@ public class AttributesResource extends ConfigBaseResource {
     @ProtectedApi(scopes = { ApiAccessConstants.ATTRIBUTES_READ_ACCESS }, groupScopes = {
             ApiAccessConstants.ATTRIBUTES_WRITE_ACCESS }, superScopes = { ApiAccessConstants.SUPER_ADMIN_READ_ACCESS })
     @Path(ApiConstants.INUM_PATH)
-    public Response getAttributeByInum(@Parameter(description = "Attribute Id") @PathParam(ApiConstants.INUM) @NotNull String inum) {
+    public Response getAttributeByInum(
+            @Parameter(description = "Attribute Id") @PathParam(ApiConstants.INUM) @NotNull String inum) {
         JansAttribute attribute = attributeService.getAttributeByInum(inum);
         checkResourceNotNull(attribute, JANS_ATTRIBUTE);
         return Response.ok(attribute).build();
@@ -117,6 +118,7 @@ public class AttributesResource extends ConfigBaseResource {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Created", content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = JansAttribute.class), examples = @ExampleObject(name = "Response example", value = "example/attribute/attribute.json"))),
             @ApiResponse(responseCode = "401", description = "Unauthorized"),
+            @ApiResponse(responseCode = "406", description = "Not Acceptable"),
             @ApiResponse(responseCode = "500", description = "InternalServerError") })
     @POST
     @ProtectedApi(scopes = { ApiAccessConstants.ATTRIBUTES_WRITE_ACCESS }, groupScopes = {}, superScopes = {
@@ -126,6 +128,13 @@ public class AttributesResource extends ConfigBaseResource {
         checkNotNull(attribute.getName(), AttributeNames.NAME);
         checkNotNull(attribute.getDisplayName(), AttributeNames.DISPLAY_NAME);
         checkResourceNotNull(attribute.getDataType(), AttributeNames.DATA_TYPE);
+
+        // check if attribute exists in schema
+        boolean attributeValidation = attributeService.validateAttributeDefinition(attribute.getName());
+        log.debug("Validate attribute while creation - attribute.getName():{}, attributeValidation:{}", attribute.getName(), attributeValidation);
+        if (!attributeValidation) {
+            throw new WebApplicationException(getNotAcceptableException("The attribute type '" + attribute.getName() + "' not defined in DB schema"));
+        }
         String inum = attributeService.generateInumForNewAttribute();
         attribute.setInum(inum);
         attribute.setDn(attributeService.getDnForAttribute(inum));
@@ -141,6 +150,7 @@ public class AttributesResource extends ConfigBaseResource {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Ok", content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = JansAttribute.class), examples = @ExampleObject(name = "Response example", value = "example/attribute/attribute.json"))),
             @ApiResponse(responseCode = "401", description = "Unauthorized"),
+            @ApiResponse(responseCode = "406", description = "Not Acceptable"),
             @ApiResponse(responseCode = "500", description = "InternalServerError") })
     @PUT
     @ProtectedApi(scopes = { ApiAccessConstants.ATTRIBUTES_WRITE_ACCESS }, groupScopes = {}, superScopes = {
@@ -152,6 +162,15 @@ public class AttributesResource extends ConfigBaseResource {
         checkNotNull(attribute.getName(), AttributeNames.NAME);
         checkNotNull(attribute.getDisplayName(), AttributeNames.DISPLAY_NAME);
         checkResourceNotNull(attribute.getDataType(), AttributeNames.DATA_TYPE);
+
+        // check if attribute exists in schema
+        boolean attributeValidation = attributeService.validateAttributeDefinition(attribute.getName());
+        log.debug("Validate attribute - attribute.getName():{}, attributeValidation:{}", attribute.getName(), attributeValidation);
+        if (!attributeValidation) {
+            throw new WebApplicationException(getNotAcceptableException(
+                    "The attribute type '" + attribute.getName() + "' not defined in DB schema"));
+        }
+
         JansAttribute existingAttribute = attributeService.getAttributeByInum(inum);
         checkResourceNotNull(existingAttribute, JANS_ATTRIBUTE);
         attribute.setInum(existingAttribute.getInum());
@@ -175,8 +194,9 @@ public class AttributesResource extends ConfigBaseResource {
     @ProtectedApi(scopes = { ApiAccessConstants.ATTRIBUTES_WRITE_ACCESS }, groupScopes = {}, superScopes = {
             ApiAccessConstants.SUPER_ADMIN_WRITE_ACCESS })
     @Path(ApiConstants.INUM_PATH)
-    public Response patchAtribute(@Parameter(description = "Attribute Id") @PathParam(ApiConstants.INUM) @NotNull String inum, @NotNull String pathString)
-            throws JsonPatchException, IOException {
+    public Response patchAtribute(
+            @Parameter(description = "Attribute Id") @PathParam(ApiConstants.INUM) @NotNull String inum,
+            @NotNull String pathString) throws JsonPatchException, IOException {
         log.debug(" JansAttribute details to patch - inum:{}, pathString:{}", inum, pathString);
         JansAttribute existingAttribute = attributeService.getAttributeByInum(inum);
         checkResourceNotNull(existingAttribute, JANS_ATTRIBUTE);
@@ -197,7 +217,8 @@ public class AttributesResource extends ConfigBaseResource {
     @Path(ApiConstants.INUM_PATH)
     @ProtectedApi(scopes = { ApiAccessConstants.ATTRIBUTES_DELETE_ACCESS }, groupScopes = {}, superScopes = {
             ApiAccessConstants.SUPER_ADMIN_DELETE_ACCESS })
-    public Response deleteAttribute(@Parameter(description = "Attribute Id") @PathParam(ApiConstants.INUM) @NotNull String inum) {
+    public Response deleteAttribute(
+            @Parameter(description = "Attribute Id") @PathParam(ApiConstants.INUM) @NotNull String inum) {
         log.debug(" JansAttribute details to delete - inum:{}", inum);
         JansAttribute attribute = attributeService.getAttributeByInum(inum);
         checkResourceNotNull(attribute, JANS_ATTRIBUTE);
