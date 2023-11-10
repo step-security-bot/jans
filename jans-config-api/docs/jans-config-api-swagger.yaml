@@ -662,8 +662,6 @@ paths:
                     }
         "401":
           description: Unauthorized
-        "406":
-          description: Not Acceptable
         "500":
           description: InternalServerError
       security:
@@ -752,8 +750,6 @@ paths:
                     }
         "401":
           description: Unauthorized
-        "406":
-          description: Not Acceptable
         "500":
           description: InternalServerError
       security:
@@ -7592,19 +7588,19 @@ components:
           $ref: '#/components/schemas/AttributeValidation'
         tooltip:
           type: string
-        whitePagesCanView:
-          type: boolean
-        userCanEdit:
-          type: boolean
-        adminCanEdit:
-          type: boolean
-        adminCanView:
-          type: boolean
-        userCanView:
-          type: boolean
         userCanAccess:
           type: boolean
         adminCanAccess:
+          type: boolean
+        userCanEdit:
+          type: boolean
+        adminCanView:
+          type: boolean
+        adminCanEdit:
+          type: boolean
+        userCanView:
+          type: boolean
+        whitePagesCanView:
           type: boolean
         baseDn:
           type: string
@@ -9377,14 +9373,14 @@ components:
           type: boolean
         internal:
           type: boolean
-        locationPath:
-          type: string
         locationType:
           type: string
           enum:
           - ldap
           - db
           - file
+        locationPath:
+          type: string
         baseDn:
           type: string
     ScriptError:

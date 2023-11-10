@@ -7,6 +7,7 @@ import io.jans.as.model.configuration.AppConfiguration;
 import io.jans.configapi.util.ApiConstants;
 import io.jans.model.JansAttribute;
 import io.jans.model.SearchRequest;
+import io.jans.orm.PersistenceEntryManager;
 import io.jans.orm.model.PagedResult;
 import io.jans.orm.model.SortOrder;
 import io.jans.orm.search.filter.Filter;
@@ -125,32 +126,23 @@ public class AttributeService extends io.jans.as.common.service.AttributeService
         
         if (dataSourceTypeService.isLDAP(getDnForAttribute(null))) {
             boolean containsAttribute = schemaService.containsAttributeTypeInSchema(attributeName);
-            log.info(" attributeName:{}, exists:{}", attributeName, containsAttribute);
             if (!containsAttribute) {
-              
                 return false;
             }
-            boolean containsAttributeInObjectClasses = containsAttributeInJansObjectClasses(attributeName);
-            if (!containsAttributeInObjectClasses) {
+            boolean containsAttributeInGluuObjectClasses = containsAttributeInJansObjectClasses(attributeName);
+            if (!containsAttributeInGluuObjectClasses) {
                 return false;
             }
-            log.info(" attributeName:{}, containsAttributeInObjectClasses:{}", attributeName,
-                    containsAttributeInObjectClasses);
+
             return true;
         } else {
-            log.info("1n 2 Validate attributeName:{}, dataSourceTypeService.isLDAP(getDnForAttribute(null):{}", attributeName, dataSourceTypeService.isLDAP(getDnForAttribute(null)));
-            boolean containsAttributeInObjectClasses = containsAttributeInJansObjectClasses(attributeName);
-            if (!containsAttributeInObjectClasses) {
-                return false;
-            }
-            log.info(" attributeName:{}, containsAttributeInObjectClasses:{}", attributeName,
-                    containsAttributeInObjectClasses);
             return true;
         }
+
     }
 
     private boolean containsAttributeInJansObjectClasses(String attributeName) {
-        log.info("Verify attributeName:{}, configurationService.getPersistenceType(), appConfiguration.getPersonCustomObjectClassList():{}", attributeName, configurationService.getPersistenceType(),
+        log.info("Verify attributeName:{}, configurationService.getPersistenceType():{}, appConfiguration.getPersonCustomObjectClassList():{}", attributeName, configurationService.getPersistenceType(),
                 appConfiguration.getPersonCustomObjectClassList());
         String persistenceType = configurationService.getPersistenceType();
         String[] arr = null;
@@ -168,5 +160,15 @@ public class AttributeService extends io.jans.as.common.service.AttributeService
         log.info("attributeName:{}, result:{}", attributeName, result);
         return result;
     }
+    
+    public boolean isLDAP() {
+        String persistenceType = configurationService.getPersistenceType();
+        log.debug("persistenceType: {}", persistenceType);
+        if (PersistenceEntryManager.PERSITENCE_TYPES.ldap.name().equals(persistenceType)) {
+            return true;
+        }
+        return false;
+    }
+
 
 }
