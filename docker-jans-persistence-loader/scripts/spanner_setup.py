@@ -1,3 +1,4 @@
+import itertools
 import json
 import logging.config
 import re
@@ -336,122 +337,36 @@ class SpannerBackend:
                     {col_name: self.client._transform_value(col_name, new_value)}
                 )
 
-        # the following columns are changed to multivalued (ARRAY type)
-        for mod in [
-            ("jansClnt", "jansDefAcrValues"),
-            ("jansClnt", "jansLogoutURI"),
-            ("jansPerson", "role"),
-            ("jansPerson", "mobile"),
-            ("jansPerson", "jansPersistentJWT"),
-            ("jansCustomScr", "jansAlias"),
-            ("jansClnt", "jansReqURI"),
-            ("jansClnt", "jansClaimRedirectURI"),
-            ("jansClnt", "jansAuthorizedOrigins"),
-            ("jansSessId", "deviceSecret"),
-        ]:
-            column_to_array(mod[0], mod[1])
+        with open("/app/static/rdbm/sql_schema_upgrade.json") as f:
+            schema_mapping = json.loads(f.read())
 
-        # the following columns must be added to respective tables
-        for mod in [
-            ("jansToken", "jansUsrDN"),
-            ("jansPerson", "jansTrustedDevices"),
-            ("jansUmaRPT", "dpop"),
-            ("jansUmaPCT", "dpop"),
-            ("jansClnt", "o"),
-            ("jansClnt", "jansGrp"),
-            ("jansScope", "creatorId"),
-            ("jansScope", "creatorTyp"),
-            ("jansScope", "creatorAttrs"),
-            ("jansScope", "creationDate"),
-            ("jansStatEntry", "jansData"),
-            ("jansSessId", "deviceSecret"),
-            ("jansSsa", "jansState"),
-            ("jansClnt", "jansClntURILocalized"),
-            ("jansClnt", "jansLogoURILocalized"),
-            ("jansClnt", "jansPolicyURILocalized"),
-            ("jansClnt", "jansTosURILocalized"),
-            ("jansClnt", "displayNameLocalized"),
-            ("jansFido2AuthnEntry", "jansApp"),
-            ("jansFido2AuthnEntry", "jansCodeChallengeHash"),
-            ("jansFido2AuthnEntry", "exp"),
-            ("jansFido2AuthnEntry", "del"),
-            ("jansFido2RegistrationEntry", "jansApp"),
-            ("jansFido2RegistrationEntry", "jansPublicKeyIdHash"),
-            ("jansFido2RegistrationEntry", "jansDeviceData"),
-            ("jansFido2RegistrationEntry", "exp"),
-            ("jansFido2RegistrationEntry", "del"),
-        ]:
-            add_column(mod[0], mod[1])
+        schema_mapping_callbacks = {
+            # the following columns are changed to multivalued (ARRAY type)
+            "to_multivalued": column_to_array,
 
-        # change column type (except from/to multivalued)
-        for mod in [
-            ("jansPerson", "givenName"),
-            ("jansPerson", "sn"),
-            ("jansPerson", "userPassword"),
-            ("jansAppConf", "userPassword"),
-            ("jansPerson", "jansStatus"),
-            ("jansPerson", "cn"),
-            ("jansPerson", "secretAnswer"),
-            ("jansPerson", "secretQuestion"),
-            ("jansPerson", "street"),
-            ("jansPerson", "address"),
-            ("jansPerson", "picture"),
-            ("jansPerson", "mail"),
-            ("jansPerson", "gender"),
-            ("jansPerson", "jansNameFormatted"),
-            ("jansPerson", "jansExtId"),
-            ("jansGrp", "jansStatus"),
-            ("jansOrganization", "jansStatus"),
-            ("jansOrganization", "street"),
-            ("jansOrganization", "postalCode"),
-            ("jansOrganization", "mail"),
-            ("jansAppConf", "jansStatus"),
-            ("jansAttr", "jansStatus"),
-            ("jansUmaResourcePermission", "jansStatus"),
-            ("jansUmaResourcePermission", "jansUmaScope"),
-            ("jansDeviceRegistration", "jansStatus"),
-            ("jansFido2AuthnEntry", "jansStatus"),
-            ("jansFido2RegistrationEntry", "jansStatus"),
-            ("jansCibaReq", "jansStatus"),
-            ("jansInumMap", "jansStatus"),
-            ("jansDeviceRegistration", "jansDeviceKeyHandle"),
-            ("jansUmaResource", "jansUmaScope"),
-            ("jansU2fReq", "jansReq"),
-            ("jansFido2AuthnEntry", "jansAuthData"),
-            ("agmFlowRun", "agFlowEncCont"),
-            ("agmFlowRun", "agFlowSt"),
-            ("agmFlowRun", "jansCustomMessage"),
-            ("agmFlow", "agFlowMeta"),
-            ("agmFlow", "agFlowTrans"),
-            ("agmFlow", "jansCustomMessage"),
-            ("jansOrganization", "jansCustomMessage"),
-            ("jansDeviceRegistration", "jansApp"),
-            ("jansFido2AuthnEntry", "jansApp"),
-            ("jansFido2RegistrationEntry", "jansApp"),
-            ("adsPrjDeployment", "adsPrjDeplDetails"),
-            ("jansFido2RegistrationEntry", "jansDeviceData"),
-            ("jansDeviceRegistration", "jansDeviceData"),
-            ("jansFido2RegistrationEntry", "jansDeviceNotificationConf"),
-            ("jansDeviceRegistration", "jansDeviceNotificationConf"),
-        ]:
-            change_column_type(mod[0], mod[1])
+            # the following columns must be added to respective tables
+            "add": add_column,
 
-        # columns are changed from multivalued
-        for mod in [
-            ("jansPerson", "jansMobileDevices"),
-            ("jansPerson", "jansOTPDevices"),
-            ("jansToken", "clnId"),
-            ("jansUmaRPT", "clnId"),
-            ("jansUmaPCT", "clnId"),
-            ("jansCibaReq", "clnId"),
-        ]:
-            column_from_array(mod[0], mod[1])
+            # change column type (except from/to multivalued)
+            "modify": change_column_type,
 
-        # int64 to string
-        for mod in [
-            ("jansFido2RegistrationEntry", "jansCodeChallengeHash"),
-        ]:
-            column_int_to_string(mod[0], mod[1])
+            # columns are changed from multivalued
+            "from_multivalued": column_from_array,
+
+            # int64 to string
+            "int_to_string": column_int_to_string,
+        }
+
+        for name, mapping in schema_mapping.items():
+            callback = schema_mapping_callbacks.get(name)
+
+            if not callback:
+                continue
+
+            for table, columns in mapping.items():
+                for mod in itertools.product([table], columns):
+                    logger.debug(f"Running {callback.__name__}({mod[0]}, {mod[1]})")
+                    callback(mod[0], mod[1])
 
     def import_custom_ldif(self, ctx):
         custom_dir = Path("/app/custom_ldif")

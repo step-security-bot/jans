@@ -1,3 +1,4 @@
+import itertools
 import json
 import logging.config
 import re
@@ -253,7 +254,6 @@ class SQLBackend:
 
     def update_schema(self):
         """Updates schema (may include data migration)"""
-
         table_mapping = self.client.get_table_mapping()
 
         def column_to_json(table_name, col_name):
@@ -361,119 +361,33 @@ class SQLBackend:
                     new_value = ""
                 self.client.update(table_name, doc_id, {col_name: new_value})
 
-        # TODO: run the function with connection context?
+        with open("/app/static/rdbm/sql_schema_upgrade.json") as f:
+            schema_mapping = json.loads(f.read())
 
-        # the following columns are changed to multivalued (JSON type)
-        for mod in [
-            ("jansClnt", "jansDefAcrValues"),
-            ("jansClnt", "jansLogoutURI"),
-            ("jansPerson", "role"),
-            ("jansPerson", "mobile"),
-            ("jansPerson", "jansPersistentJWT"),
-            ("jansCustomScr", "jansAlias"),
-            ("jansClnt", "jansReqURI"),
-            ("jansClnt", "jansClaimRedirectURI"),
-            ("jansClnt", "jansAuthorizedOrigins"),
-            ("jansSessId", "deviceSecret"),
-        ]:
-            column_to_json(mod[0], mod[1])
+        schema_mapping_callbacks = {
+            # the following columns are changed to multivalued (JSON type)
+            "to_multivalued": column_to_json,
 
-        # the following columns must be added to respective tables
-        for mod in [
-            ("jansToken", "jansUsrDN"),
-            ("jansPerson", "jansTrustedDevices"),
-            ("jansUmaRPT", "dpop"),
-            ("jansUmaPCT", "dpop"),
-            ("jansClnt", "o"),
-            ("jansClnt", "jansGrp"),
-            ("jansScope", "creatorId"),
-            ("jansScope", "creatorTyp"),
-            ("jansScope", "creatorAttrs"),
-            ("jansScope", "creationDate"),
-            ("jansStatEntry", "jansData"),
-            ("jansSessId", "deviceSecret"),
-            ("jansSsa", "jansState"),
-            ("jansClnt", "jansClntURILocalized"),
-            ("jansClnt", "jansLogoURILocalized"),
-            ("jansClnt", "jansPolicyURILocalized"),
-            ("jansClnt", "jansTosURILocalized"),
-            ("jansClnt", "displayNameLocalized"),
-            ("jansFido2AuthnEntry", "jansApp"),
-            ("jansFido2AuthnEntry", "jansCodeChallengeHash"),
-            ("jansFido2AuthnEntry", "exp"),
-            ("jansFido2AuthnEntry", "del"),
-            ("jansFido2RegistrationEntry", "jansApp"),
-            ("jansFido2RegistrationEntry", "jansPublicKeyIdHash"),
-            ("jansFido2RegistrationEntry", "jansDeviceData"),
-            ("jansFido2RegistrationEntry", "exp"),
-            ("jansFido2RegistrationEntry", "del"),
-        ]:
-            add_column(mod[0], mod[1])
+            # the following columns must be added to respective tables
+            "add": add_column,
 
-        # change column type (except from/to multivalued)
-        for mod in [
-            ("jansPerson", "givenName"),
-            ("jansPerson", "sn"),
-            ("jansPerson", "userPassword"),
-            ("jansAppConf", "userPassword"),
-            ("jansPerson", "jansStatus"),
-            ("jansPerson", "cn"),
-            ("jansPerson", "secretAnswer"),
-            ("jansPerson", "secretQuestion"),
-            ("jansPerson", "street"),
-            ("jansPerson", "address"),
-            ("jansPerson", "picture"),
-            ("jansPerson", "mail"),
-            ("jansPerson", "gender"),
-            ("jansPerson", "jansNameFormatted"),
-            ("jansPerson", "jansExtId"),
-            ("jansGrp", "jansStatus"),
-            ("jansOrganization", "jansStatus"),
-            ("jansOrganization", "street"),
-            ("jansOrganization", "postalCode"),
-            ("jansOrganization", "mail"),
-            ("jansAppConf", "jansStatus"),
-            ("jansAttr", "jansStatus"),
-            ("jansUmaResourcePermission", "jansStatus"),
-            ("jansUmaResourcePermission", "jansUmaScope"),
-            ("jansDeviceRegistration", "jansStatus"),
-            ("jansFido2AuthnEntry", "jansStatus"),
-            ("jansFido2RegistrationEntry", "jansStatus"),
-            ("jansCibaReq", "jansStatus"),
-            ("jansInumMap", "jansStatus"),
-            ("jansDeviceRegistration", "jansDeviceKeyHandle"),
-            ("jansUmaResource", "jansUmaScope"),
-            ("jansU2fReq", "jansReq"),
-            ("jansFido2AuthnEntry", "jansAuthData"),
-            ("jansFido2RegistrationEntry", "jansCodeChallengeHash"),
-            ("agmFlowRun", "agFlowEncCont"),
-            ("agmFlowRun", "agFlowSt"),
-            ("agmFlowRun", "jansCustomMessage"),
-            ("agmFlow", "agFlowMeta"),
-            ("agmFlow", "agFlowTrans"),
-            ("agmFlow", "jansCustomMessage"),
-            ("jansOrganization", "jansCustomMessage"),
-            ("jansDeviceRegistration", "jansApp"),
-            ("jansFido2AuthnEntry", "jansApp"),
-            ("jansFido2RegistrationEntry", "jansApp"),
-            ("adsPrjDeployment", "adsPrjDeplDetails"),
-            ("jansFido2RegistrationEntry", "jansDeviceData"),
-            ("jansDeviceRegistration", "jansDeviceData"),
-            ("jansFido2RegistrationEntry", "jansDeviceNotificationConf"),
-            ("jansDeviceRegistration", "jansDeviceNotificationConf"),
-        ]:
-            change_column_type(mod[0], mod[1])
+            # change column type (except from/to multivalued)
+            "modify": change_column_type,
 
-        # columns are changed from multivalued
-        for mod in [
-            ("jansPerson", "jansMobileDevices"),
-            ("jansPerson", "jansOTPDevices"),
-            ("jansToken", "clnId"),
-            ("jansUmaRPT", "clnId"),
-            ("jansUmaPCT", "clnId"),
-            ("jansCibaReq", "clnId"),
-        ]:
-            column_from_json(mod[0], mod[1])
+            # columns are changed from multivalued
+            "from_multivalued": column_from_json,
+        }
+
+        for name, mapping in schema_mapping.items():
+            callback = schema_mapping_callbacks.get(name)
+
+            if not callback:
+                continue
+
+            for table, columns in mapping.items():
+                for mod in itertools.product([table], columns):
+                    logger.debug(f"Running {callback.__name__}({mod[0]}, {mod[1]})")
+                    callback(mod[0], mod[1])
 
     def import_custom_ldif(self, ctx):
         custom_dir = Path("/app/custom_ldif")

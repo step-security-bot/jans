@@ -175,6 +175,7 @@ RUN mkdir -p /app/custom_ldif /etc/certs /etc/jans/conf
 COPY scripts /app/scripts
 # this overrides existing templates
 COPY templates /app/templates
+COPY static /app/static
 
 # disable keyRegeneration
 RUN sed -i -r 's/("keyRegenerationEnabled":)true/\1false/g' /app/templates/jans-auth/jans-auth-config.json

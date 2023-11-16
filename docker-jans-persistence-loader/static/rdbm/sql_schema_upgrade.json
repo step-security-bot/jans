@@ -1,0 +1,181 @@
+{
+    "to_multivalued": {
+        "jansClnt": [
+            "jansDefAcrValues",
+            "jansLogoutURI",
+            "jansReqURI",
+            "jansClaimRedirectURI",
+            "jansAuthorizedOrigins"
+        ],
+        "jansPerson": [
+            "role",
+            "mobile",
+            "jansPersistentJWT"
+        ],
+        "jansCustomScr": [
+            "jansAlias"
+        ],
+        "jansSessId": [
+            "deviceSecret"
+        ]
+    },
+    "add": {
+        "jansToken": [
+            "jansUsrDN"
+        ],
+        "jansPerson": [
+            "jansTrustedDevices"
+        ],
+        "jansUmaRPT": [
+            "dpop"
+        ],
+        "jansUmaPCT": [
+            "dpop"
+        ],
+        "jansClnt": [
+            "o",
+            "jansGrp"
+        ],
+        "jansScope": [
+            "creatorId",
+            "creatorTyp",
+            "creatorAttrs",
+            "creationDate"
+        ],
+        "jansStatEntry": [
+            "jansData"
+        ],
+        "jansSessId": [
+            "deviceSecret"
+        ],
+        "jansSsa": [
+            "jansState"
+        ],
+        "jansClnt": [
+            "jansClntURILocalized",
+            "jansLogoURILocalized",
+            "jansPolicyURILocalized",
+            "jansTosURILocalized",
+            "displayNameLocalized"
+        ],
+        "jansFido2AuthnEntry": [
+            "jansApp",
+            "jansCodeChallengeHash",
+            "exp",
+            "del"
+        ],
+        "jansFido2RegistrationEntry": [
+            "jansApp",
+            "jansPublicKeyIdHash",
+            "jansDeviceData",
+            "exp",
+            "del"
+        ]
+    },
+    "modify": {
+        "jansPerson": [
+            "givenName",
+            "sn",
+            "userPassword",
+            "jansStatus",
+            "cn",
+            "secretAnswer",
+            "secretQuestion",
+            "street",
+            "address",
+            "picture",
+            "mail",
+            "gender",
+            "jansNameFormatted",
+            "jansExtId"
+        ],
+        "jansGrp": [
+            "jansStatus"
+        ],
+        "jansOrganization": [
+            "jansStatus",
+            "street",
+            "postalCode",
+            "mail",
+            "jansCustomMessage"
+        ],
+        "jansAppConf": [
+            "userPassword",
+            "jansStatus"
+        ],
+        "jansAttr": [
+            "jansStatus"
+        ],
+        "jansUmaResourcePermission": [
+            "jansStatus",
+            "jansUmaScope"
+        ],
+        "jansDeviceRegistration": [
+            "jansStatus",
+            "jansDeviceKeyHandle",
+            "jansDeviceNotificationConf",
+            "jansApp",
+            "jansDeviceData"
+        ],
+        "jansFido2AuthnEntry": [
+            "jansStatus",
+            "jansAuthData",
+            "jansApp"
+        ],
+        "jansFido2RegistrationEntry": [
+            "jansStatus",
+            "jansCodeChallengeHash",
+            "jansApp",
+            "jansDeviceData",
+            "jansDeviceNotificationConf"
+        ],
+        "jansCibaReq": [
+            "jansStatus"
+        ],
+        "jansInumMap": [
+            "jansStatus"
+        ],
+        "jansUmaResource": [
+            "jansUmaScope"
+        ],
+        "jansU2fReq": [
+            "jansReq"
+        ],
+        "agmFlowRun": [
+            "agFlowEncCont",
+            "agFlowSt",
+            "jansCustomMessage"
+        ],
+        "agmFlow": [
+            "agFlowMeta",
+            "agFlowTrans",
+            "jansCustomMessage"
+        ],
+        "adsPrjDeployment": [
+            "adsPrjDeplDetails"
+        ]
+    },
+    "from_multivalued": {
+        "jansPerson": [
+            "jansMobileDevices",
+            "jansOTPDevices"
+        ],
+        "jansToken": [
+            "clnId"
+        ],
+        "jansUmaRPT": [
+            "clnId"
+        ],
+        "jansUmaPCT": [
+            "clnId"
+        ],
+        "jansCibaReq": [
+            "clnId"
+        ]
+    },
+    "int_to_string": {
+        "jansFido2RegistrationEntry": [
+            "jansCodeChallengeHash"
+        ]
+    }
+}
